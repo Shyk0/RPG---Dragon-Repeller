@@ -19,7 +19,23 @@ const goldText = document.querySelector('#goldText');
 const monsterStats = document.querySelector('#monsterStats');
 const monsterName = document.querySelector('#monsterName');
 const monsterHealthText = document.querySelector('#monsterHealth');
-
+const weapons = [{
+  name: 'stick',
+  power: 5
+  },
+  {
+    name: 'dagger',
+    power: 30
+  },
+  {
+    name: 'claw hammer',
+    power: 50
+  },
+  {
+    name: 'sword',
+    power: 100
+  }
+]
 const locations = [{
     name: 'town square',
     'button text': ['Go to store','Go to cave','Fight dragon'],
@@ -75,7 +91,7 @@ function goCave(){
 }
 
 function fightDragon(){
-    console.log('Fighting dragon.')
+    console.log('Fighting dragon.');
 }
 
 function buyHealth(){
@@ -86,12 +102,19 @@ function buyHealth(){
       healthText.innerText = health;//Actualizamos el texto de la variable health
     }
     else{
-      text.innerText = 'You do not have enough gold to buy health.'
+      text.innerText = 'You do not have enough gold to buy health.';
     }
   }
 
 function buyWeapon(){
-    
+    if(gold >= 30){
+      gold -= 30;
+      currentWeapon++; //Cuando el player ejecute esta funcion cambiara en +1 en las armas.
+      goldText.innerText = gold;
+      let newWeapon = weapons[currentWeapon].name;
+      text.innerText = 'You now have a new weapon.';
+      text.innerText="You now have a " + newWeapon + ".";
+    }
 }
 
 function fightSlime(){
