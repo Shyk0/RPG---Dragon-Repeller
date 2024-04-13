@@ -19,23 +19,21 @@ const goldText = document.querySelector('#goldText');
 const monsterStats = document.querySelector('#monsterStats');
 const monsterName = document.querySelector('#monsterName');
 const monsterHealthText = document.querySelector('#monsterHealth');
-const weapons = [{
-  name: 'stick',
-  power: 5
-  },
-  {
-    name: 'dagger',
-    power: 30
-  },
-  {
-    name: 'claw hammer',
-    power: 50
-  },
-  {
-    name: 'sword',
-    power: 100
-  }
+const weapons = [
+  {name: 'stick', power: 5},
+  {name: 'dagger', power: 30},
+  {name: 'claw hammer', power: 50},
+  {name: 'sword', power: 100}
 ]
+
+const monsters = [
+    { name: "slime", level: 2, health: 15 },
+    { name: "fanged beast", level: 8, health: 60 },
+    { name: "dragon", level: 20, health: 300 }
+  ];
+  
+
+
 const locations = [{
     name: 'town square',
     'button text': ['Go to store','Go to cave','Fight dragon'],
@@ -55,9 +53,10 @@ const locations = [{
     text: 'You enter the cave. You see some monsters.'       
   },
   {
-    name: "fight",
-    "button text": [],
-    "button functions":; 
+    name: 'fight',
+    'button text' : ['Attack', 'Dodge', 'Run'],
+    'button functions' : [attack, dodge, goTown],
+    text: 'You are fighting a monster.'
   }
 ];
 
@@ -90,9 +89,7 @@ function goCave(){
     update(locations[2]);//llamamos a la funcion update con la constate locations, y le decimos que nada mas queremos el tercero bloque de codigo
 }
 
-function fightDragon(){
-    console.log('Fighting dragon.');
-}
+
 
 function buyHealth(){
   if (gold >= 10){
@@ -107,24 +104,69 @@ function buyHealth(){
   }
 
 function buyWeapon(){
+  if(currentWeapon <  weapons.length - 1){//Verificamos si el currentWeapon tiene un numero que no sobre pase weapons
     if(gold >= 30){
       gold -= 30;
       currentWeapon++; //Cuando el player ejecute esta funcion cambiara en +1 en las armas.
       goldText.innerText = gold;
       let newWeapon = weapons[currentWeapon].name;
-      text.innerText = 'You now have a new weapon.';
-      text.innerText="You now have a " + newWeapon + ".";
+      text.innerText = "You now have a " + newWeapon + ".";
+      inventory.push(newWeapon);//Agregamos al final del array de invetory usando el metodo push
+      text.innerText += ' In your inventory you have: ' + inventory + '.';
     }
+    else{
+      text.innerText = 'You do not have enough gold to buy a weapon.';
+    }
+  }
+  else{
+    text.innerText = 'You already have the most powerful weapon!'
+    button2.innerText = 'Sell weapon for 15 gold'
+    button2.onclick = sellWeapon
+  }
+}
+
+function sellWeapon(){
+  if(inventory.length > 1){
+    gold += 15
+    goldText.innerText = gold
+    let currentWeapon = inventory.shift //Borra el primer elemento del array y lo retorna
+    text.innerText = 'You sold a ' + currentWeapon + '.'
+    text.innerText += ' In your inventory you have: ' + inventory 
+  }
+  else{
+    text.innerText = "Don't sell your only weapon!"
+  }
 }
 
 function fightSlime(){
-
+  fighting = 0
+  goFight()
 }
 
 function fightBeast(){
-
+  fighting = 1
+  goFight()
 }
 
+function fightDragon(){
+  fighting = 2
+  goFight()
+}
 
+function goFight(){
+  update(locations[3])
+  monsterHealth = monsters[fighting].health //Accedemos al array de los monsters y buscamos la propiedad health
+  monsterStats.style.display = 'block' //Cuando el jugador ejecute esta funcion las monsterstats se mostraran en pantalla
+  monsterName.innerText = monsters[fighting].name //Accedemos al array monsters y buscamos el nombre y el health
+  monsterHealthText.innerText = monsters[fighting].health
+}
+function attack(){
+  text.innerText = 'The ' + monsters[fighting].name + 'attacks'//Accedemos al array monsters y busca el nombre del monster
+  text.innerText += " You attack it with your " + weapons[currentWeapon].name +'.'
+  health -= monsters[fighting].level
+  monsterHealth -= weapons[currentWeapon].power
+}
 
+function dodge(){
 
+}
